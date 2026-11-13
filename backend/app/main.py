@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.database import engine
+from database import engine
 from app.routers import auth, clientes, configuracion, estadias, reportes, vehiculos
 from app.security import get_current_user, solo_admin
 
