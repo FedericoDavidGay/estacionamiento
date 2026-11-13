@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8000";
+const BASE = "https://estacionamiento-production-24004c63.up.railway.app";
 
 export function getToken() {
   return localStorage.getItem("token");

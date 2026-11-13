@@ -10,7 +10,8 @@ app = FastAPI(title="Estacionamiento API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],  # O puedes poner la URL de Vercel una vez que te la den
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
