@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from database import engine
-from app.routers import auth, clientes, configuracion, estadias, reportes, vehiculos
-from app.security import get_current_user, solo_admin
+from routers import auth, clientes, configuracion, estadias, reportes, vehiculos
+from security import get_current_user, solo_admin
 
 app = FastAPI(title="Estacionamiento API")
 
