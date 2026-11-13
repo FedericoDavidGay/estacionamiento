@@ -3,9 +3,9 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import ClienteMensual, Cochera, Configuracion
-from app.schemas import ClienteCreate, ClienteOut, ClienteUpdate
+from database import get_db
+from models import ClienteMensual, Cochera, Configuracion
+from schemas import ClienteCreate, ClienteOut, ClienteUpdate
 
 router = APIRouter(prefix="/clientes", tags=["clientes mensuales"])
 

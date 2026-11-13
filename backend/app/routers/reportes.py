@@ -5,10 +5,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import ClienteMensual, Cochera, Estadia
-from app.routers.clientes import normalizar_patente
-from app.schemas import EstadiaOut
+from database import get_db
+from models import ClienteMensual, Cochera, Estadia
+from routers.clientes import normalizar_patente
+from schemas import EstadiaOut
 
 router = APIRouter(prefix="/reportes", tags=["reportes"])
 

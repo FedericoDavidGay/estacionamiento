@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import ClienteMensual, Estadia
-from app.routers.clientes import normalizar_patente
-from app.schemas import EstadiaOut
+from database import get_db
+from models import ClienteMensual, Estadia
+from routers.clientes import normalizar_patente
+from schemas import EstadiaOut
 
 router = APIRouter(prefix="/vehiculos", tags=["vehiculos"])
 

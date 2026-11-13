@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import ClienteMensual, Cochera, Configuracion, Estadia, TipoTarifa
-from app.schemas import ConfigGenerales, TarifaCreate, TarifaOut, TarifaUpdate
+from database import get_db
+from models import ClienteMensual, Cochera, Configuracion, Estadia, TipoTarifa
+from schemas import ConfigGenerales, TarifaCreate, TarifaOut, TarifaUpdate
 
 router = APIRouter(prefix="/configuracion", tags=["configuracion"])
 

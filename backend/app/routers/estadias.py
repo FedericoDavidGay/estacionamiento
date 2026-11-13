@@ -6,12 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import ClienteMensual, Cochera, Estadia, TipoTarifa
-from app.routers.clientes import normalizar_patente
-from app.schemas import CobroIn, EstadiaOut, IngresoIn
+from database import get_db
+from models import ClienteMensual, Cochera, Estadia, TipoTarifa
+from routers.clientes import normalizar_patente
+from schemas import CobroIn, EstadiaOut, IngresoIn
 
-from app.routers.configuracion import leer_config
+from routers.configuracion import leer_config
 
 router = APIRouter(prefix="/estadias", tags=["movimientos"])
 
