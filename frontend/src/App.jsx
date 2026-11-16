@@ -16,7 +16,8 @@ const formatoPesos = (n) =>
 const hora = (iso) =>
   new Date(iso).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
 
-const minutosDesde = (iso) => Math.max(0, Math.floor((Date.now() - new Date(iso)) / 60000));
+const minutosDesde = (iso) =>
+  Math.max(0, Math.floor((Date.now() - new Date(iso)) / 60000));
 
 const duracion = (min) =>
   `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
@@ -25,7 +26,7 @@ function Kpi({ icono, titulo, valor, color = "azul", barra }) {
   const borde = color === "azul" ? "border-azul" : "border-naranja";
   const fondo = color === "azul" ? "bg-azul/10" : "bg-naranja/10";
   return (
-    <div className={`rounded-xl border-l-4 bg-white p-3 shadow-sm ${borde}`}>
+    <div className={`flex h-full flex-col rounded-xl border-l-4 bg-white p-3 shadow-sm ${borde}`}>
       <div className="flex items-center gap-3">
         <div
           className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-lg ${fondo}`}
@@ -37,11 +38,14 @@ function Kpi({ icono, titulo, valor, color = "azul", barra }) {
           <p className="truncate text-lg font-bold text-slate-800">{valor}</p>
         </div>
       </div>
-      {barra !== undefined && (
-        <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200">
-          <div className="h-1.5 rounded-full bg-naranja" style={{ width: `${barra}%` }} />
+      <div className="mt-auto pt-2">
+        <div className="h-1.5 w-full rounded-full bg-slate-200">
+          <div
+            className={`h-1.5 rounded-full bg-naranja ${barra === undefined ? "opacity-0" : ""}`}
+            style={{ width: `${barra ?? 0}%` }}
+          />
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -72,8 +76,18 @@ export default function App({ usuario, onSalir }) {
       setActivas(a);
       setMovs(
         [
-          ...a.map((e) => ({ id: "in" + e.id, tipo: "Ingreso", patente: e.patente, fecha: e.fecha_entrada })),
-          ...hist.estadias.map((e) => ({ id: "out" + e.id, tipo: "Salida", patente: e.patente, fecha: e.fecha_salida })),
+          ...a.map((e) => ({
+            id: "in" + e.id,
+            tipo: "Ingreso",
+            patente: e.patente,
+            fecha: e.fecha_entrada,
+          })),
+          ...hist.estadias.map((e) => ({
+            id: "out" + e.id,
+            tipo: "Salida",
+            patente: e.patente,
+            fecha: e.fecha_salida,
+          })),
         ]
           .sort((x, y) => new Date(y.fecha) - new Date(x.fecha))
           .slice(0, 6)
@@ -161,40 +175,49 @@ export default function App({ usuario, onSalir }) {
       ) : vista === "vehiculos" ? (
         <Vehiculos onVolver={() => setVista("panel")} onAviso={avisar} />
       ) : (
-          <div className="flex min-h-0 flex-1 flex-col">
-            <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-4 lg:grid-rows-[auto_auto_minmax(0,1fr)]">
-            {/* Fila 1: saludo (ancho completo) */}
-                        <div className="lg:col-span-4">
-              <h1 className="text-[18px] font-bold text-azul md:text-[22px]">
-                ¡Hola, {usuario?.nombre?.split(" ")[0] ?? ""}!
-              </h1>
-              <p className="text-xs text-slate-500 md:text-sm">
-                Acá tenés el resumen del estacionamiento.
-              </p>
+        <div className="flex min-h-0 flex-1 flex-col gap-3">
+          {/* Saludo: ancho completo */}
+          <div className="shrink-0">
+            <h1 className="text-[18px] font-bold text-azul md:text-[22px]">
+              ¡Hola, {usuario?.nombre?.split(" ")[0] ?? ""}!
+            </h1>
+            <p className="text-xs text-slate-500 md:text-sm">
+              Acá tenés el resumen del estacionamiento.
+            </p>
+          </div>
+
+          {/* Indicadores: ancho completo */}
+          {resumen && (
+            <div className="grid shrink-0 grid-cols-2 gap-3 lg:grid-cols-4">
+              <Kpi
+                icono="🚗"
+                titulo="Vehículos adentro"
+                valor={`${resumen.adentro} / ${total}`}
+              />
+              <Kpi
+                icono="🅿️"
+                titulo="Cocheras libres"
+                valor={`${libres} / ${total}`}
+                color="naranja"
+                barra={pctLibres}
+              />
+              <Kpi
+                icono="👥"
+                titulo="Mensuales activos"
+                valor={`${resumen.mensuales_activos} / ${resumen.mensuales_maximo ?? 0}`}
+              />
+              <Kpi
+                icono="💰"
+                titulo="Ingresos hoy"
+                valor={formatoPesos(resumen.ingresos_hoy)}
+                color="naranja"
+              />
             </div>
+          )}
 
-            {/* Fila 2: indicadores (ancho completo, mismo borde derecho que la columna) */}
-            {resumen && (
-              <div className="grid grid-cols-2 gap-3 lg:col-span-2 lg:grid-cols-4">
-                <Kpi icono="🚗" titulo="Vehículos adentro" valor={resumen.adentro} />
-                <Kpi
-                  icono="🅿️"
-                  titulo="Cocheras libres"
-                  valor={`${libres} / ${total}`}
-                  color="naranja"
-                  barra={pctLibres}
-                />
-                <Kpi icono="👥" titulo="Mensuales activos" valor={resumen.mensuales_activos} />
-                <Kpi
-                  icono="💰"
-                  titulo="Ingresos hoy"
-                  valor={formatoPesos(resumen.ingresos_hoy)}
-                  color="naranja"
-                />
-              </div>
-            )}
-
-            {/* Fila 3, columna izquierda */}
+          {/* Grilla inferior: 3 columnas + 1 columna */}
+          <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-4">
+            {/* Columna izquierda (3/4) */}
             <div className="flex min-w-0 flex-col gap-3 lg:col-span-3 lg:min-h-0">
               <div className="grid shrink-0 gap-3 md:grid-cols-2">
                 <section className="rounded-xl bg-white p-4 shadow-sm">
@@ -275,7 +298,7 @@ export default function App({ usuario, onSalir }) {
                 {activas.length === 0 ? (
                   <p className="text-sm text-slate-500">No hay autos adentro.</p>
                 ) : (
-                    <div className="max-h-72 overflow-auto lg:max-h-none lg:min-h-0 lg:flex-1">
+                  <div className="max-h-72 overflow-auto lg:max-h-none lg:min-h-0 lg:flex-1">
                     <table className="w-full min-w-[560px] text-left text-xs md:text-sm">
                       <thead className="sticky top-0 bg-slate-100 text-[11px] uppercase text-slate-500">
                         <tr>
@@ -317,7 +340,7 @@ export default function App({ usuario, onSalir }) {
               </section>
             </div>
 
-            {/* Fila 3, columna derecha: pegada al borde derecho */}
+            {/* Columna derecha (1/4) */}
             <div className="flex min-w-0 flex-col gap-3 lg:col-span-1 lg:min-h-0">
               <section className="hidden shrink-0 rounded-xl bg-white p-4 shadow-sm lg:block">
                 <h2 className="mb-3 text-base font-semibold text-azul">Ocupación actual</h2>
@@ -356,7 +379,7 @@ export default function App({ usuario, onSalir }) {
                 {movs.length === 0 ? (
                   <p className="text-xs text-slate-500">Sin movimientos.</p>
                 ) : (
-                    <ul className="max-h-80 space-y-2 overflow-auto lg:max-h-none lg:min-h-0 lg:flex-1">
+                  <ul className="max-h-80 space-y-2 overflow-auto lg:max-h-none lg:min-h-0 lg:flex-1">
                     {movs.map((m) => (
                       <li key={m.id} className="flex items-center gap-2 text-xs">
                         <span
@@ -379,7 +402,7 @@ export default function App({ usuario, onSalir }) {
             </div>
           </div>
         </div>
-        )}
+      )}
     </Layout>
   );
 }

@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import ClienteMensual, Cochera, Estadia
+from models import ClienteMensual, Cochera, Configuracion, Estadia
 from routers.clientes import normalizar_patente
 from schemas import EstadiaOut
 
@@ -36,6 +36,10 @@ def resumen(db: Session = Depends(get_db)):
     mensuales_activos = db.scalar(
         select(func.count(ClienteMensual.id)).where(ClienteMensual.activo.is_(True))
     )
+    max_mensuales = int(
+        db.scalar(select(Configuracion.valor).where(Configuracion.clave == "max_cocheras_mensuales"))
+        or 0
+    )
     ingresos_hoy = db.scalar(
         select(func.coalesce(func.sum(Estadia.monto), 0)).where(
             Estadia.estado == "cerrada", Estadia.fecha_salida >= inicio_hoy
@@ -53,6 +57,7 @@ def resumen(db: Session = Depends(get_db)):
         "cocheras_comunes_libres": comunes_total - comunes_ocupadas,
         "mensuales_activos": mensuales_activos,
         "autos_salidos_hoy": autos_hoy,
+        "mensuales_maximo": max_mensuales,
         "ingresos_hoy": ingresos_hoy,
     }
 
