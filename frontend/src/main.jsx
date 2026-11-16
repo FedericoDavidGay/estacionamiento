@@ -7,6 +7,9 @@ import { getToken, setToken } from "./api";
 
 function Gate() {
   const [logueado, setLogueado] = useState(!!getToken());
+  const [usuario, setUsuario] = useState(() =>
+    JSON.parse(localStorage.getItem("usuario") || "null")
+  );
 
   useEffect(() => {
     const salir = () => setLogueado(false);
@@ -15,22 +18,26 @@ function Gate() {
   }, []);
 
   if (!logueado) {
-    return <Login onLogin={() => setLogueado(true)} />;
+    return (
+      <Login
+        onLogin={(u) => {
+          localStorage.setItem("usuario", JSON.stringify(u));
+          setUsuario(u);
+          setLogueado(true);
+        }}
+      />
+    );
   }
 
   return (
-    <>
-      <button
-        onClick={() => {
-          setToken(null);
-          setLogueado(false);
-        }}
-        className="fixed bottom-4 right-4 z-50 rounded-lg bg-white px-3 py-1 text-sm text-slate-600 shadow hover:bg-slate-50"
-      >
-        Salir
-      </button>
-      <App />
-    </>
+    <App
+      usuario={usuario}
+      onSalir={() => {
+        setToken(null);
+        localStorage.removeItem("usuario");
+        setLogueado(false);
+      }}
+    />
   );
 }
 

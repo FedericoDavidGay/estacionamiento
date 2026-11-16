@@ -84,11 +84,11 @@ export default function Configuracion({ onVolver, onAviso }) {
 
   if (!generales) return <p className="text-slate-500">Cargando configuración...</p>;
 
-  const input = "rounded-lg border border-slate-300 px-3 py-2";
+  const input = "min-w-0 w-full rounded-lg border border-slate-300 px-3 py-2";
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-2xl font-bold text-slate-800">Configuración</h2>
         <button onClick={onVolver} className="text-slate-500 hover:text-slate-800">
           ← Volver al panel
@@ -136,9 +136,10 @@ export default function Configuracion({ onVolver, onAviso }) {
         </form>
       </section>
 
-      <section className="rounded-xl bg-white p-5 shadow-sm">
+      <section className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold text-slate-800">Tarifas</h3>
-        <table className="w-full text-left text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] text-left text-sm">
           <thead className="border-b text-slate-500">
             <tr>
               <th className="py-2">Nombre</th>
@@ -159,19 +160,19 @@ export default function Configuracion({ onVolver, onAviso }) {
                   />
                 </td>
                 <td>
-                  <input
+                                    <input
                     type="number"
                     value={t.duracion_minutos}
                     onChange={(e) => cambiarTarifa(t.id, "duracion_minutos", e.target.value)}
-                    className={`${input} w-28`}
+                    className="w-28 min-w-0 rounded-lg border border-slate-300 px-3 py-2"
                   />
                 </td>
                 <td>
-                  <input
+                                    <input
                     type="number"
-                    value={t.precio}
-                    onChange={(e) => cambiarTarifa(t.id, "precio", e.target.value)}
-                    className={`${input} w-32`}
+                    value={t.duracion_minutos}
+                    onChange={(e) => cambiarTarifa(t.id, "duracion_minutos", e.target.value)}
+                    className="w-32 min-w-0 rounded-lg border border-slate-300 px-3 py-2"
                   />
                 </td>
                 <td>
@@ -199,6 +200,7 @@ export default function Configuracion({ onVolver, onAviso }) {
             ))}
           </tbody>
         </table>
+        </div>
 
         <form onSubmit={crearTarifa} className="mt-6 flex flex-wrap items-end gap-3 border-t pt-4">
           <label className="flex flex-col gap-1 text-sm text-slate-600">

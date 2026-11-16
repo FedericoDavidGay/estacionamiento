@@ -7,6 +7,8 @@ from database import get_db
 from models import ClienteMensual, Cochera, Configuracion
 from schemas import ClienteCreate, ClienteOut, ClienteUpdate
 
+import calendar
+
 router = APIRouter(prefix="/clientes", tags=["clientes mensuales"])
 
 
@@ -128,6 +130,31 @@ def actualizar(cliente_id: int, data: ClienteUpdate, db: Session = Depends(get_d
     db.refresh(cliente)
     return cliente
 
+def sumar_meses(fecha: datetime, meses: int) -> datetime:
+    total = fecha.month - 1 + meses
+    anio = fecha.year + total // 12
+    mes = total % 12 + 1
+    dia = min(fecha.day, calendar.monthrange(anio, mes)[1])
+    return fecha.replace(year=anio, month=mes, day=dia)
+
+
+@router.post("/{cliente_id}/renovar", response_model=ClienteOut)
+def renovar(cliente_id: int, meses: int = 1, db: Session = Depends(get_db)):
+    cliente = db.get(ClienteMensual, cliente_id)
+    if cliente is None:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    if not cliente.activo:
+        validar_cupo(db, cliente.cochera_id, excluir_id=cliente.id, chequear_cupo=True)
+        cliente.activo = True
+
+    ahora = datetime.now()
+    base = cliente.vencimiento if cliente.vencimiento and cliente.vencimiento > ahora else ahora
+    cliente.vencimiento = sumar_meses(base, meses).replace(hour=23, minute=59, second=59)
+
+    db.commit()
+    db.refresh(cliente)
+    return cliente
 
 @router.delete("/{cliente_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar(cliente_id: int, db: Session = Depends(get_db)):

@@ -84,4 +84,5 @@ export const api = {
 
   vehiculo: (patente) => request(`/vehiculos/${encodeURIComponent(patente)}`),
   eliminarTarifa: (id) => request(`/configuracion/tarifas/${id}`, { method: "DELETE" }),
+    renovarCliente: (id) => request(`/clientes/${id}/renovar`, { method: "POST" }),
 };

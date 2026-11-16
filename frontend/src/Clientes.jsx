@@ -95,6 +95,17 @@ export default function Clientes({ onVolver, onAviso }) {
     }
   }
 
+    async function renovar(c) {
+    if (!window.confirm(`¿Registrar el pago de 1 mes para ${c.nombre} ${c.apellido}?`)) return;
+    try {
+      await api.renovarCliente(c.id);
+      onAviso("ok", "Abono renovado 1 mes");
+      cargar();
+    } catch (err) {
+      onAviso("error", err.message);
+    }
+  }
+
   async function eliminar(c) {
     if (!window.confirm(`¿Dar de baja a ${c.nombre} ${c.apellido}?`)) return;
     try {
@@ -128,23 +139,23 @@ export default function Clientes({ onVolver, onAviso }) {
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2">
+            <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex min-w-0 gap-2">
           <input
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && cargar(busqueda)}
             placeholder="Buscar por nombre, DNI o patente"
-            className="w-72 rounded-lg border border-slate-300 px-3 py-2"
+            className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 md:w-72 md:flex-none"
           />
           <button
             onClick={() => cargar(busqueda)}
-            className="rounded-lg bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
+            className="shrink-0 rounded-lg bg-slate-800 px-4 py-2 text-white hover:bg-slate-700"
           >
             Buscar
           </button>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           {cupo && (
             <span className="rounded-lg bg-white px-3 py-2 text-sm text-slate-700 shadow-sm">
               Cupo: {activos} / {cupo.max} activos
@@ -164,7 +175,7 @@ export default function Clientes({ onVolver, onAviso }) {
           <h3 className="mb-4 text-lg font-semibold text-slate-800">
             {editando === "nuevo" ? "Nuevo cliente" : "Editar cliente"}
           </h3>
-          <form onSubmit={guardar} className="grid gap-4 md:grid-cols-3">
+          <form onSubmit={guardar} className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {campo("Nombre *", "nombre", { required: true })}
             {campo("Apellido *", "apellido", { required: true })}
             {campo("DNI *", "dni", { required: true })}
@@ -205,7 +216,8 @@ export default function Clientes({ onVolver, onAviso }) {
         {lista.length === 0 ? (
           <p className="text-slate-500">No hay clientes para mostrar.</p>
         ) : (
-          <table className="w-full text-left text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[600px] text-left text-sm">
             <thead className="border-b text-slate-500">
               <tr>
                 <th className="py-2">Apellido y nombre</th>
@@ -225,8 +237,22 @@ export default function Clientes({ onVolver, onAviso }) {
                   <td className="font-semibold">{c.patente}</td>
                   <td>{c.cochera_id ?? "-"}</td>
                   <td>${Number(c.precio_mensual).toLocaleString("es-AR")}</td>
-                  <td>{c.activo ? "Activo" : "Inactivo"}</td>
-                  <td className="space-x-2 text-right">
+                  <td>
+                    {!c.activo ? (
+                      "Inactivo"
+                    ) : c.vencimiento && new Date(c.vencimiento) < new Date() ? (
+                      <span className="font-semibold text-red-600">Vencido</span>
+                    ) : (
+                      "Activo"
+                    )}
+                  </td>
+                  <td className="space-x-2 text-right whitespace-nowrap">
+                    <button
+                      onClick={() => renovar(c)}
+                      className="rounded-md bg-green-600 px-3 py-1 text-white hover:bg-green-500"
+                    >
+                      Renovar
+                    </button>
                     <button
                       onClick={() => editar(c)}
                       className="rounded-md border border-slate-300 px-3 py-1 hover:bg-slate-100"
@@ -243,7 +269,8 @@ export default function Clientes({ onVolver, onAviso }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+           </table>
+          </div>
         )}
       </section>
     </div>

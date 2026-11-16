@@ -138,7 +138,7 @@ export default function Reportes({ onVolver, onAviso }) {
       {tab === "buscar" && (
         <>
           <section className="rounded-xl bg-white p-5 shadow-sm">
-            <form onSubmit={buscar} className="grid gap-4 md:grid-cols-5">
+            <form onSubmit={buscar} className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5">
               <input
                 placeholder="Patente"
                 value={filtros.patente}
@@ -212,7 +212,8 @@ export default function Reportes({ onVolver, onAviso }) {
 function TablaEstadias({ estadias }) {
   if (estadias.length === 0) return <p className="text-slate-500">Sin movimientos.</p>;
   return (
-    <table className="w-full text-left text-sm">
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[400px] text-left text-sm">
       <thead className="border-b text-slate-500">
         <tr>
           <th className="py-2">Patente</th>
@@ -238,5 +239,6 @@ function TablaEstadias({ estadias }) {
         ))}
       </tbody>
     </table>
+   </div>
   );
 }
