@@ -161,11 +161,11 @@ export default function App({ usuario, onSalir }) {
       ) : vista === "vehiculos" ? (
         <Vehiculos onVolver={() => setVista("panel")} onAviso={avisar} />
       ) : (
-                  <div className="flex min-h-0 flex-1 flex-col">
-                    <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_260px] lg:grid-rows-[auto_auto_minmax(0,1fr)]">
+          <div className="flex min-h-0 flex-1 flex-col">
+            <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-4 lg:grid-rows-[auto_auto_minmax(0,1fr)]">
             {/* Fila 1: saludo (ancho completo) */}
-            <div className="lg:col-span-2">
-              <h1 className="text-xl font-bold text-azul md:text-2xl">
+                        <div className="lg:col-span-4">
+              <h1 className="text-[18px] font-bold text-azul md:text-[22px]">
                 ¡Hola, {usuario?.nombre?.split(" ")[0] ?? ""}!
               </h1>
               <p className="text-xs text-slate-500 md:text-sm">
@@ -195,7 +195,7 @@ export default function App({ usuario, onSalir }) {
             )}
 
             {/* Fila 3, columna izquierda */}
-                        <div className="flex min-w-0 flex-col gap-3 lg:min-h-0">
+            <div className="flex min-w-0 flex-col gap-3 lg:col-span-3 lg:min-h-0">
               <div className="grid shrink-0 gap-3 md:grid-cols-2">
                 <section className="rounded-xl bg-white p-4 shadow-sm">
                   <h2 className="mb-3 text-base font-semibold text-azul">🚗 Ingreso manual</h2>
@@ -318,7 +318,7 @@ export default function App({ usuario, onSalir }) {
             </div>
 
             {/* Fila 3, columna derecha: pegada al borde derecho */}
-            <div className="flex min-w-0 flex-col gap-3 lg:min-h-0">
+            <div className="flex min-w-0 flex-col gap-3 lg:col-span-1 lg:min-h-0">
               <section className="hidden shrink-0 rounded-xl bg-white p-4 shadow-sm lg:block">
                 <h2 className="mb-3 text-base font-semibold text-azul">Ocupación actual</h2>
                 <div className="flex items-center gap-4">
