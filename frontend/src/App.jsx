@@ -217,7 +217,6 @@ export default function App({ usuario, onSalir }) {
                 titulo="Ingresos hoy"
                 valor={formatoPesos(resumen.ingresos_hoy)}
                 color="naranja"
-                barra={pctIngresos}
               />
             </div>
           )}
