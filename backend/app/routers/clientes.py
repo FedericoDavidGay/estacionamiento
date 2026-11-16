@@ -1,3 +1,6 @@
+import calendar
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
@@ -6,8 +9,6 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import ClienteMensual, Cochera, Configuracion
 from schemas import ClienteCreate, ClienteOut, ClienteUpdate
-
-import calendar
 
 router = APIRouter(prefix="/clientes", tags=["clientes mensuales"])
 
