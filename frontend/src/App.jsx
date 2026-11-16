@@ -193,6 +193,7 @@ export default function App({ usuario, onSalir }) {
                 icono="🚗"
                 titulo="Vehículos adentro"
                 valor={`${resumen.adentro} / ${total}`}
+                barra={pctOcupadas}
               />
               <Kpi
                 icono="🅿️"
@@ -205,12 +206,18 @@ export default function App({ usuario, onSalir }) {
                 icono="👥"
                 titulo="Mensuales activos"
                 valor={`${resumen.mensuales_activos} / ${resumen.mensuales_maximo ?? 0}`}
+                barra={
+                  resumen.mensuales_maximo
+                    ? Math.round((resumen.mensuales_activos / resumen.mensuales_maximo) * 100)
+                    : 0
+                }
               />
               <Kpi
                 icono="💰"
                 titulo="Ingresos hoy"
                 valor={formatoPesos(resumen.ingresos_hoy)}
                 color="naranja"
+                barra={pctIngresos}
               />
             </div>
           )}
